@@ -49,7 +49,12 @@ export function AddPatientDialog() {
   });
 
   const onSubmit = (values: PatientFormValues) => {
-    addPatient(values);
+    // Explicitly create a new object to ensure type compatibility.
+    addPatient({
+      name: values.name,
+      age: values.age,
+      history: values.history,
+    });
     toast({
       title: "Patient Added",
       description: `${values.name} has been successfully added to the records.`,
