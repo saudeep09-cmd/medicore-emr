@@ -48,7 +48,7 @@ export function AddPatientDialog() {
     },
   });
 
-  function onSubmit(values: PatientFormValues) {
+  const onSubmit = (values: PatientFormValues) => {
     addPatient(values);
     toast({
       title: "Patient Added",
@@ -56,7 +56,7 @@ export function AddPatientDialog() {
     });
     form.reset();
     setOpen(false);
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
