@@ -33,11 +33,13 @@ const patientSchema = z.object({
   history: z.string().min(10, "Medical history must be at least 10 characters."),
 });
 
+type PatientFormValues = z.infer<typeof patientSchema>;
+
 export function AddPatientDialog() {
   const [open, setOpen] = useState(false);
   const addPatient = useStore((state) => state.addPatient);
 
-  const form = useForm<z.infer<typeof patientSchema>>({
+  const form = useForm<PatientFormValues>({
     resolver: zodResolver(patientSchema),
     defaultValues: {
       name: "",
@@ -46,7 +48,7 @@ export function AddPatientDialog() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof patientSchema>) {
+  function onSubmit(values: PatientFormValues) {
     addPatient(values);
     toast({
       title: "Patient Added",
