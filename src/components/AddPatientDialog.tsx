@@ -29,7 +29,7 @@ import { toast } from "@/components/ui/use-toast";
 
 const patientSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  age: z.coerce.number().int().positive("Age must be a positive number."),
+  age: z.coerce.number().int().nonnegative("Age must be a non-negative number."),
   history: z.string().min(10, "Medical history must be at least 10 characters."),
 });
 
