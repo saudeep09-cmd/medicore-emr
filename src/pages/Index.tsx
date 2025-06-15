@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
 
 const Index = () => {
   return (
@@ -19,19 +21,54 @@ const Index = () => {
               EyeSight EMR
             </h1>
             <p className="text-muted-foreground">
-              AI-Powered Diabetic Retinopathy Detection
+              Comprehensive Electronic Medical Records with AI-Powered Diabetic Retinopathy Detection
             </p>
           </div>
-          {/* TODO: Add API config button here */}
+          <Button variant="outline" size="sm">
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
+          </Button>
         </header>
 
         <main className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Total Patients</CardTitle>
+                <CardDescription>Active patient records</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">2</div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Today's Visits</CardTitle>
+                <CardDescription>Scheduled appointments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">AI Screenings</CardTitle>
+                <CardDescription>Retinal analyses completed</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0</div>
+              </CardContent>
+            </Card>
+          </div>
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>Patient Records</CardTitle>
                 <CardDescription>
-                  Browse and manage your patient records.
+                  Manage patient demographics, medical history, and clinical records
                 </CardDescription>
               </div>
               <AddPatientDialog />
