@@ -68,6 +68,7 @@ export function AddPatientDialog() {
     const age = new Date().getFullYear() - new Date(values.dateOfBirth).getFullYear();
     
     addPatient({
+      name: `${values.firstName} ${values.lastName}`,
       firstName: values.firstName,
       lastName: values.lastName,
       dateOfBirth: values.dateOfBirth,
