@@ -1,6 +1,6 @@
-
 import { AddPatientDialog } from "@/components/AddPatientDialog";
 import { PatientList } from "@/components/PatientList";
+import { FirebaseSettings } from "@/components/FirebaseSettings";
 import {
   Card,
   CardContent,
@@ -31,6 +31,8 @@ const Index = () => {
         </header>
 
         <main className="pt-6">
+          <FirebaseSettings />
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <Card>
               <CardHeader className="pb-3">

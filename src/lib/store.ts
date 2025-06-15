@@ -1,17 +1,20 @@
-
 import { create } from 'zustand';
 import { Patient, Visit, Provider } from './types';
+import { firebaseStore } from './firebaseStore';
 
 interface AppState {
   patients: Patient[];
   providers: Provider[];
   currentPatient: Patient | null;
   apiUrl: string;
-  addPatient: (patient: Omit<Patient, 'id' | 'visits' | 'createdDate' | 'lastUpdated' | 'mrn'>) => void;
-  updatePatient: (id: string, updates: Partial<Patient>) => void;
+  useFirebase: boolean;
+  addPatient: (patient: Omit<Patient, 'id' | 'visits' | 'createdDate' | 'lastUpdated' | 'mrn'>) => Promise<void>;
+  updatePatient: (id: string, updates: Partial<Patient>) => Promise<void>;
   setCurrentPatient: (patient: Patient | null) => void;
-  addVisit: (patientId: string, visit: Omit<Visit, 'id'>) => void;
+  addVisit: (patientId: string, visit: Omit<Visit, 'id'>) => Promise<void>;
   setApiUrl: (url: string) => void;
+  loadPatients: () => Promise<void>;
+  toggleFirebase: (enabled: boolean) => void;
 }
 
 const generateMRN = () => {
@@ -161,35 +164,83 @@ export const useStore = create<AppState>((set, get) => ({
   ],
   currentPatient: null,
   apiUrl: 'https://saudeep09-eye-sight-insight.hf.space/predict',
+  useFirebase: false,
   
-  addPatient: (patient) =>
-    set((state) => ({
-      patients: [
-        ...state.patients,
-        { 
-          ...patient, 
-          id: `p${state.patients.length + 1}`,
-          name: `${patient.firstName} ${patient.lastName}`,
-          mrn: generateMRN(),
-          visits: [],
-          createdDate: new Date().toISOString(),
-          lastUpdated: new Date().toISOString()
-        },
-      ],
-    })),
+  addPatient: async (patient) => {
+    const state = get();
+    if (state.useFirebase) {
+      try {
+        const newPatient = await firebaseStore.addPatient(patient);
+        set((state) => ({
+          patients: [...state.patients, newPatient],
+        }));
+      } catch (error) {
+        console.error('Failed to add patient to Firebase:', error);
+        // Fallback to local storage
+        set((state) => ({
+          patients: [
+            ...state.patients,
+            { 
+              ...patient, 
+              id: `p${state.patients.length + 1}`,
+              name: `${patient.firstName} ${patient.lastName}`,
+              mrn: generateMRN(),
+              visits: [],
+              createdDate: new Date().toISOString(),
+              lastUpdated: new Date().toISOString()
+            },
+          ],
+        }));
+      }
+    } else {
+      set((state) => ({
+        patients: [
+          ...state.patients,
+          { 
+            ...patient, 
+            id: `p${state.patients.length + 1}`,
+            name: `${patient.firstName} ${patient.lastName}`,
+            mrn: generateMRN(),
+            visits: [],
+            createdDate: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
+          },
+        ],
+      }));
+    }
+  },
     
-  updatePatient: (id, updates) =>
+  updatePatient: async (id, updates) => {
+    const state = get();
+    if (state.useFirebase) {
+      try {
+        await firebaseStore.updatePatient(id, updates);
+      } catch (error) {
+        console.error('Failed to update patient in Firebase:', error);
+      }
+    }
+    
     set((state) => ({
       patients: state.patients.map((patient) =>
         patient.id === id 
           ? { ...patient, ...updates, lastUpdated: new Date().toISOString() }
           : patient
       ),
-    })),
+    }));
+  },
     
   setCurrentPatient: (patient) => set({ currentPatient: patient }),
   
-  addVisit: (patientId, visit) =>
+  addVisit: async (patientId, visit) => {
+    const state = get();
+    if (state.useFirebase) {
+      try {
+        await firebaseStore.addVisit(patientId, visit);
+      } catch (error) {
+        console.error('Failed to add visit to Firebase:', error);
+      }
+    }
+    
     set((state) => ({
       patients: state.patients.map((patient) =>
         patient.id === patientId
@@ -203,7 +254,22 @@ export const useStore = create<AppState>((set, get) => ({
             }
           : patient
       ),
-    })),
+    }));
+  },
     
   setApiUrl: (url) => set({ apiUrl: url }),
+  
+  loadPatients: async () => {
+    const state = get();
+    if (state.useFirebase) {
+      try {
+        const patients = await firebaseStore.getPatients();
+        set({ patients });
+      } catch (error) {
+        console.error('Failed to load patients from Firebase:', error);
+      }
+    }
+  },
+  
+  toggleFirebase: (enabled) => set({ useFirebase: enabled }),
 }));
