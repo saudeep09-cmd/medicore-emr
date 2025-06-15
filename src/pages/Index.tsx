@@ -18,10 +18,10 @@ const Index = () => {
         <header className="flex items-center justify-between pb-6 border-b">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              EyeSight EMR
+              MediCore EMR
             </h1>
             <p className="text-muted-foreground">
-              Comprehensive Electronic Medical Records with AI-Powered Diabetic Retinopathy Detection
+              Comprehensive Electronic Medical Records System for Healthcare Providers
             </p>
           </div>
           <Button variant="outline" size="sm">
@@ -54,8 +54,8 @@ const Index = () => {
             
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">AI Screenings</CardTitle>
-                <CardDescription>Retinal analyses completed</CardDescription>
+                <CardTitle className="text-lg">Medical Screenings</CardTitle>
+                <CardDescription>Diagnostic tests completed</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">0</div>
